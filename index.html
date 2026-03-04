@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saycap — Screen Recording for Mac</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+      background: #0a0a0a;
+      color: #fafafa;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .grain {
+      position: fixed; inset: 0; pointer-events: none; z-index: 100;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 128px 128px;
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 4rem 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .icon svg { width: 40px; height: 40px; }
+
+    h1 {
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 1.5rem;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      color: rgba(255,255,255,0.5);
+      max-width: 480px;
+      line-height: 1.6;
+      margin-bottom: 3rem;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 36px;
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(59,130,246,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+
+    .download-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(59,130,246,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+
+    .download-btn:active { transform: translateY(0); }
+
+    .download-btn svg { width: 20px; height: 20px; }
+
+    .meta {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.25);
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1px;
+      max-width: 800px;
+      width: 100%;
+      margin-top: 5rem;
+      background: rgba(255,255,255,0.06);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .feature {
+      padding: 2rem;
+      background: #0a0a0a;
+    }
+
+    .feature-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .feature p {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.5;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.2);
+    }
+
+    .footer a { color: rgba(255,255,255,0.35); }
+
+    .kbd {
+      display: inline-block;
+      padding: 2px 7px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 5px;
+      font-family: 'SF Mono', monospace;
+      font-size: 0.8rem;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+
+  <section class="hero">
+    <div class="icon">
+      <svg viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="16" stroke="white" stroke-width="3"/>
+        <circle cx="20" cy="20" r="5.5" fill="white"/>
+      </svg>
+    </div>
+
+    <h1>Screen recording,<br><span>simplified.</span></h1>
+
+    <p class="subtitle">
+      Lightweight Mac menu bar app. Select an area, record, trim, and export — no clutter.
+    </p>
+
+    <a href="https://github.com/johnydec/saycap/releases/download/v0.1.0/saycap-0.1.0.dmg" class="download-btn" id="download-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Download for Mac
+    </a>
+    <p class="meta">v0.1.0 &middot; macOS 12+ &middot; Apple Silicon</p>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">&#9673;</div>
+        <h3>Area Selection</h3>
+        <p>Draw a rectangle to record any part of your screen. Resize and reposition freely.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#9998;</div>
+        <h3>Draw on Screen</h3>
+        <p>Press <span class="kbd">Alt</span>+<span class="kbd">X</span> to annotate live during recording with color picker.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#9986;</div>
+        <h3>Trim & Export</h3>
+        <p>Built-in editor with visual timeline. Export as MP4 or GIF, copy to clipboard.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#9678;</div>
+        <h3>Menu Bar App</h3>
+        <p>Lives in your menu bar. Start with <span class="kbd">&#8984;&#8679;5</span>. No dock icon, no clutter.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <a href="https://github.com/johnydec/saycap">GitHub</a>
+  </footer>
+</body>
+</html>
